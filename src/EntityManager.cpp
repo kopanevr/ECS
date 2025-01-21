@@ -14,7 +14,7 @@ EntityId EntityManager::createEntity()
 {
     EntityId entity = m_nextEntityId++;
 
-    m_entities.push_back(entity);
+    m_entities.insert(entity);
 
     return entity;
 }
@@ -26,18 +26,25 @@ void EntityManager::destroyEntity(EntityId id)
         m_components.erase(id);
     }
 
-    std::vector<EntityId>::iterator it = std::find(m_entities.begin(), m_entities.end(), id);
-
-    if (it != m_entities.end())
+    if (m_entities.find(id) != m_entities.end())
     {
-        m_entities.erase(it);
+        m_entities.erase(id);
     }
 }
 
 template<typename T>
 void EntityManager::addComponent(EntityId id, std::unique_ptr<T> component)
 {
-    m_components[id].push_back(std::move(component));
+    std::unordered_map<EntityId, std::vector<std::unique_ptr<Component>>>::iterator it = m_components.find(id);
+
+    if (it == m_components.end())
+    {
+        m_components[id].push_back(std::move(component));
+
+        return;
+    }
+
+    it->second.push_back(std::move(component));
 }
 
 template<typename T>

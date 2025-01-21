@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "entity.hpp"
 #include "component.hpp"
@@ -10,7 +11,7 @@
 class EntityManager final
 {
 private:
-    std::vector<EntityId> m_entities;
+    std::unordered_set<EntityId> m_entities;
     std::unordered_map<EntityId, std::vector<std::unique_ptr<Component>>> m_components;
 
     EntityId m_nextEntityId = 0U;
@@ -34,7 +35,7 @@ public:
     template<typename T>
     bool hasComponent(EntityId id);
 
-    const std::vector<EntityId>& getEntity() const
+    const std::unordered_set<EntityId>& getEntity() const
     {
         return m_entities;
     }
